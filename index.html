@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Love From Stephen — A Small Website for Rose</title>
+  <style>
+    /* -------------------------
+       CONFIG: change these
+       ------------------------- */
+    :root{
+      --bg: #fff4f6;
+      --card: #ffffff;
+      --accent: #ff6b9f;
+      --accent-2: #ff9ec4;
+      --muted: #7b6f79;
+      --glass: rgba(255,255,255,0.6);
+      --radius: 16px;
+      --font: "Inter",system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    /* -------------------------
+       base
+       ------------------------- */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--font);
+      background: radial-gradient(circle at 10% 10%, #fff6fb 0%, var(--bg) 35%), linear-gradient(180deg,#fff 0%, #fff4f6 100%);
+      color:#3b2e35;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow-x:hidden;
+      padding:24px;
+    }
+
+    .container{max-width:980px;margin:0 auto}
+
+    header{
+      display:flex;align-items:center;justify-content:space-between;padding:18px 0
+    }
+    .brand{display:flex;align-items:center;gap:14px}
+    .logo{
+      width:64px;height:64px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:22px;box-shadow:0 6px 18px rgba(255,107,159,0.18)
+    }
+    .title{font-size:18px;font-weight:700}
+    .subtitle{font-size:13px;color:var(--muted)}
+
+    /* hero */
+    .hero{
+      margin-top:10px;padding:28px;border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,0.7), rgba(255,250,252,0.6));box-shadow:0 8px 30px rgba(203,100,143,0.08);position:relative;overflow:hidden
+    }
+    .hero-grid{display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:center}
+
+    .message{
+      padding:10px 6px
+    }
+    .hi{font-size:28px;margin:0}
+    .big{
+      font-size:42px;margin:8px 0 10px;line-height:1.02;color:#5a2230
+    }
+    .lead{color:var(--muted);margin-bottom:18px}
+
+    .cta{display:flex;gap:10px}
+    .btn{background:var(--accent);border:none;color:white;padding:12px 16px;border-radius:12px;font-weight:600;cursor:pointer;box-shadow:0 6px 18px rgba(255,107,159,0.18)}
+    .btn.ghost{background:transparent;color:var(--accent);border:1px solid rgba(255,107,159,0.12)}
+
+    /* hearts behind */
+    .hearts{position:absolute;inset:0;pointer-events:none}
+    .heart{position:absolute;width:24px;height:24px;background:var(--accent);transform:rotate(-45deg);border-radius:5px;opacity:0.95}
+    .heart:before,.heart:after{content:"";position:absolute;width:24px;height:24px;background:var(--accent);border-radius:50%}
+    .heart:before{top:-12px;left:0}
+    .heart:after{left:12px;top:0}
+
+    /* small card for photo */
+    .card{
+      background:var(--card);padding:14px;border-radius:14px;box-shadow:0 6px 20px rgba(90,34,48,0.06)
+    }
+    .photo{width:100%;height:260px;border-radius:12px;object-fit:cover;display:block}
+
+    /* sections */
+    .sections{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:22px}
+
+    .reasons{grid-column:1/ -1;padding:16px;border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,0.9), rgba(255,255,255,0.75));box-shadow:0 6px 18px rgba(160,88,117,0.04)}
+    .reasons-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+    .reason{
+      background:linear-gradient(180deg,#fff,#fff9fb);padding:14px;border-radius:12px;border:1px solid rgba(255,107,159,0.06);min-height:110px;display:flex;flex-direction:column;gap:8px
+    }
+    .reason h4{margin:0;font-size:15px;color:#4b2b34}
+    .reason p{margin:0;color:var(--muted);font-size:13px}
+
+    /* gallery */
+    .gallery{display:flex;flex-wrap:wrap;gap:10px}
+    .thumb{width:calc(33.333% - 6.6px);border-radius:10px;overflow:hidden;cursor:pointer}
+    .thumb img{display:block;width:100%;height:120px;object-fit:cover}
+
+    /* letter */
+    .letter{padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,245,249,0.9));border:1px dashed rgba(255,107,159,0.12)}
+    .letter p{margin:0;color:#51343b;line-height:1.6}
+    .typewriter{font-family:Georgia, 'Times New Roman', serif;font-size:16px;color:#4a2b31}
+
+    /* footer */
+    footer{margin-top:26px;text-align:center;color:var(--muted);font-size:13px}
+
+    /* modal */
+    .modal{position:fixed;inset:0;background:rgba(13,8,10,0.6);display:flex;align-items:center;justify-content:center;padding:20px;z-index:60;opacity:0;pointer-events:none;transition:opacity .18s}
+    .modal.open{opacity:1;pointer-events:auto}
+    .modal .modal-card{max-width:900px;width:100%;border-radius:12px;overflow:hidden;background:var(--card);padding:12px}
+    .modal img{width:100%;height:520px;object-fit:cover}
+
+    /* responsive */
+    @media (max-width:880px){
+      .hero-grid{grid-template-columns:1fr}
+      .sections{grid-template-columns:1fr}
+      .thumb{width:calc(50% - 7px)}
+      .photo{height:200px}
+    }
+
+    @media (max-width:440px){
+      .thumb{width:100%}
+      .big{font-size:32px}
+    }
+
+    /* subtle floating animation for heart elements created in JS */
+    @keyframes floatUp{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-420px) scale(1.25);opacity:0}}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">❤</div>
+        <div>
+          <div class="title">A birthday message — from <strong>Stephen</strong></div>
+          <div class="subtitle">Made with <span style="color:var(--accent)">love</span> for <strong>Rose Chidalu Obiakwala</strong></div>
+        </div>
+      </div>
+      <div>
+        <button class="btn" id="playBtn">Play ❤️</button>
+        <button class="btn ghost" id="themeBtn">Toggle Hearts</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero card">
+        <div class="hero-grid">
+          <div class="message">
+            <p class="hi">Hey, <strong>Rose</strong> 👋</p>
+            <h1 class="big">You are my favorite person eventhough you are stubborn.</h1>
+            <p class="lead">I built this little corner of the web to remind you of all the tiny, brilliant things that make you, you. Click around — there are surprises.</p>
+            <div class="cta">
+              <button class="btn" id="openLetter">Read my letter</button>
+              <button class="btn ghost" id="viewGallery">See photos</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <img class="photo" id="mainPhoto" src="images/rose1.JPG" alt="photo">
+            <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <div style="font-weight:700">Our favorite</div>
+                <div style="font-size:13px;color:var(--muted)">A captured moment</div>
+              </div>
+              <button class="btn ghost" id="surpriseBtn">Surprise me</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="hearts" id="heartsContainer"></div>
+      </section>
+
+      <section class="sections">
+        <div class="reasons card">
+          <h3 style="margin-top:0">Reasons I love you</h3>
+          <div class="reasons-grid" id="reasonsGrid">
+            <!-- reasons will be injected by JS -->
+          </div>
+        </div>
+
+        <div class="card" style="padding:12px">
+          <h3 style="margin:6px 0">Photo gallery</h3>
+          <div class="gallery" id="gallery">
+            <!-- thumbs injected by JS -->
+          </div>
+        </div>
+
+        <div class="card" style="grid-column:1/ -1">
+          <h3 style="margin:6px 0">A letter for you</h3>
+          <div class="letter">
+            <div class="typewriter" id="typewriter"> <!-- typed by JS --> </div>
+            <div style="margin-top:14px;display:flex;gap:10px;align-items:center">
+              <button class="btn" id="downloadBtn">Save letter</button>
+              <button class="btn ghost" id="printBtn">Print</button>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <footer>
+        Made with ❤️ — <strong>Stephen</strong>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- modal for gallery -->
+  <div class="modal" id="modal">
+    <div class="modal-card">
+      <img id="modalImg" src="" alt="">
+    </div>
+  </div>
+
+  <script>
+    /* -------------------------
+       EDITABLE data: replace with your content
+       ------------------------- */
+    const data = {
+      yourName: 'Stephen',
+      herName: 'Rose',
+      reasons: [
+        {title: 'Your smile', text: 'Makes even the worst day feel like a feature release.'},
+        {title: 'Your patience', text: "When I overthink, you make things simple — and kind."},
+        {title: 'Your laughter', text: 'The best soundtrack for my life but maybe you learnt it from me just kidding 😂.'},
+        {title: 'Your courage', text: 'You try new things and inspire me to do the same.'},
+        {title: 'Your humility', text: 'You’re gentle(maybe 😂), grounded, and real—and that’s what makes you truly beautiful to me.'},
+        {title: 'The way you listen', text: 'You actually hear me. That means everything but forget you are a fish.'}
+      ],
+      photos: [
+        './images/photo1.jpeg',
+        './images/rose1.JPG',
+        './images/rose2.JPG',
+        './images/phto2.png',
+        
+      ],
+      letter: `My dearest Rose,\n\nHappy Birthday to the girl who somehow makes my days brighter and who fight me with no reason. From the moment we crossed paths, life got louder, sweeter, and a whole lot more fun. I made this tiny corner of the web just for you — a little stash of all the silly, sweet, and honest reasons I love you. Each one small, each one true, just like the way you laugh at your own jokes… and somehow make me laugh too.\n\nHappy birthday Rose,\nForever your partner-in-fun,\nStephen`
+    }
+
+    /* -------------------------
+       small helpers to update names in the page
+       ------------------------- */
+    document.querySelectorAll('strong').forEach(el => {
+      el.textContent = el.textContent.replace('[Your Name]', data.yourName).replace('[Her Name]', data.herName)
+    })
+    document.title = `Love From ${data.yourName} — A Small Website for ${data.herName}`
+
+    /* -------------------------
+       reasons grid
+       ------------------------- */
+    const reasonsGrid = document.getElementById('reasonsGrid')
+    data.reasons.forEach((r, i)=>{
+      const d = document.createElement('div')
+      d.className = 'reason'
+      d.innerHTML = `<h4> ${i+1}. ${r.title}</h4><p>${r.text}</p>`
+      reasonsGrid.appendChild(d)
+    })
+
+    /* -------------------------
+       gallery
+       ------------------------- */
+    const gallery = document.getElementById('gallery')
+    data.photos.forEach((src, i)=>{
+      const t = document.createElement('div')
+      t.className = 'thumb'
+      const img = document.createElement('img')
+      img.src = src
+      img.alt = `photo-${i+1}`
+      t.appendChild(img)
+      t.addEventListener('click', ()=>openModal(src))
+      gallery.appendChild(t)
+    })
+
+    const modal = document.getElementById('modal')
+    const modalImg = document.getElementById('modalImg')
+    function openModal(src){
+      modalImg.src = src
+      modal.classList.add('open')
+    }
+    modal.addEventListener('click', ()=> modal.classList.remove('open'))
+
+    /* -------------------------
+       typewriter for letter
+       ------------------------- */
+    const typeEl = document.getElementById('typewriter')
+    const text = data.letter.replace(/\[Her Name\]/g, data.herName).replace(/\[Your Name\]/g, data.yourName)
+    let idx = 0
+    function typeNext(){
+      if(idx <= text.length){
+        typeEl.innerText = text.slice(0, idx) + (Math.floor(idx/2) % 2 ? '\u2588' : '')
+        idx++
+        setTimeout(typeNext, 24 + (idx%6))
+      }
+    }
+    // start after small delay so it feels natural
+    setTimeout(typeNext, 800)
+
+    /* -------------------------
+       hearts generator — gentle animated hearts
+       ------------------------- */
+    const heartsContainer = document.getElementById('heartsContainer')
+    let heartsOn = true
+    function spawnHeart(){
+      if(!heartsOn) return
+      const h = document.createElement('div')
+      h.className = 'heart'
+      const size = 12 + Math.random()*28
+      h.style.width = h.style.height = size+'px'
+      h.style.left = Math.random()*100 + '%'
+      h.style.bottom = '-10px'
+      h.style.opacity = 0.9
+      h.style.transform = 'rotate(-45deg)'
+      h.style.background = `linear-gradient(135deg, ${randomAccent()}, ${randomAccent(true)})`
+      h.style.animation = `floatUp ${6 + Math.random()*3}s linear forwards`
+      heartsContainer.appendChild(h)
+      setTimeout(()=> h.remove(), 9000)
+    }
+    function randomAccent(second){
+      const a = second ? '#ff9ec4' : '#ff6b9f'
+      const b = second ? '#ffcbd6' : '#ffb3d1'
+      return Math.random()>0.5 ? a : b
+    }
+    // spawn some regularly
+    setInterval(spawnHeart, 700)
+
+    /* -------------------------
+       small interactive buttons
+       ------------------------- */
+    document.getElementById('openLetter').addEventListener('click', ()=>{
+      window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})
+    })
+    document.getElementById('viewGallery').addEventListener('click', ()=> openModal(data.photos[0]))
+    document.getElementById('surpriseBtn').addEventListener('click', ()=>{
+      // pick random photo to show in main hero
+      const idx = Math.floor(Math.random()*data.photos.length)
+      document.getElementById('mainPhoto').src = data.photos[idx]
+    })
+
+    // toggle hearts
+    document.getElementById('themeBtn').addEventListener('click', ()=>{
+      heartsOn = !heartsOn
+      document.getElementById('themeBtn').textContent = heartsOn ? 'Toggle Hearts' : 'Hearts Off'
+    })
+
+    // play a soft chime (optional) — simple audio inlined via tone using WebAudio
+    document.getElementById('playBtn').addEventListener('click', ()=>{
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+
+  o.type = 'sine';
+  g.gain.value = 0.0001;
+
+  o.connect(g);
+  g.connect(ctx.destination);
+
+  // Helper to schedule one chime "ping"
+  function ping(freq, t){
+    o.frequency.setValueAtTime(freq, ctx.currentTime + t);
+    g.gain.setValueAtTime(0.03, ctx.currentTime + t);
+    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + t + 0.8);
+  }
+
+  o.start();
+
+  // Schedule a repeating gentle melody over 60 seconds
+  let time = 0;
+  const duration = 60; // 1 minute
+
+  while(time < duration){
+    ping(440, time);
+    ping(523.25, time + 0.5);
+    ping(659.25, time + 1.0);
+
+    // Slight variation each loop to avoid robotic repetition
+    ping(784, time + 1.5);
+    ping(659.25, time + 2.0);
+
+    time += 3; // every 3 seconds the pattern repeats
+  }
+
+  // Stop after 60 seconds
+  setTimeout(()=>{
+    o.stop();
+    ctx.close();
+  }, (duration + 1) * 1000);
+});
+
+
+
+    /* -------------------------
+       download letter as txt
+       ------------------------- */
+    document.getElementById('downloadBtn').addEventListener('click', ()=>{
+      const blob = new Blob([text], {type:'text/plain;charset=utf-8'})
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url; a.download = `letter-to-${data.herName || 'love'}.txt`
+      document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url)
+    })
+    document.getElementById('printBtn').addEventListener('click', ()=>{
+      const w = window.open('about:blank','_blank')
+      w.document.write(`<pre style="font-family:Georgia,serif;white-space:pre-wrap">${text}</pre>`)
+      w.document.close(); w.print()
+    })
+
+    /* -------------------------
+       small accessibility: close modal with Escape
+       ------------------------- */
+    window.addEventListener('keydown', e=>{
+      if(e.key === 'Escape') modal.classList.remove('open')
+    })
+
+  </script>
+</body>
+</html>
